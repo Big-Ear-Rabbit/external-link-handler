@@ -1,19 +1,27 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface SearchParams {
   url: string;
 }
 
-const ExternalLinkHandler = ({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) => {
+const WHITELISTED_URLS = [
+  "https://trustedsite.com",
+  "https://anothertrustedsite.com",
+];
+
+const isWhitelisted = (url: string) => {
+  return WHITELISTED_URLS.some((whitelistedUrl) =>
+    url.startsWith(whitelistedUrl)
+  );
+};
+
+const ExternalLinkHandler = () => {
   const router = useRouter();
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const url = searchParams.get("url");
   const [previousPath, setPreviousPath] = useState<string>("");
 
   useEffect(() => {
@@ -23,12 +31,18 @@ const ExternalLinkHandler = ({
   }, []);
 
   const handleProceed = () => {
-    window.location.href = searchParams.url;
+    window.location.href = url!;
   };
 
   const handleCancel = () => {
     router.push(previousPath);
   };
+
+  // If the URL is whitelisted, proceed directly
+  if (url && isWhitelisted(url)) {
+    handleProceed();
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -36,9 +50,7 @@ const ExternalLinkHandler = ({
         <h1 className="text-2xl font-bold mb-4">
           You are about to leave the site
         </h1>
-        <p className="mb-6">
-          Are you sure you want to proceed to {searchParams.url}?
-        </p>
+        <p className="mb-6">Are you sure you want to proceed to {url}?</p>
         <div className="space-x-4">
           <button
             onClick={handleProceed}

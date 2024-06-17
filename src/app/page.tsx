@@ -21,9 +21,17 @@ export default function Home() {
             href="https://www.google.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline mr-4"
           >
             External Link to Google
+          </a>
+          <a
+            href="https://trustedsite.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline"
+          >
+            External Link in whitelists
           </a>
         </div>
       </div>

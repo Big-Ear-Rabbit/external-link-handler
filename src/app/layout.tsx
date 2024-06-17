@@ -4,6 +4,17 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./globals.css";
 
+const WHITELISTED_URLS = [
+  "https://trustedsite.com",
+  "https://anothertrustedsite.com",
+];
+
+const isWhitelisted = (url: string) => {
+  return WHITELISTED_URLS.some((whitelistedUrl) =>
+    url.startsWith(whitelistedUrl)
+  );
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -19,6 +30,9 @@ export default function RootLayout({
         link.href.startsWith("http") &&
         !link.href.includes(window.location.host)
       ) {
+        if (isWhitelisted(link.href)) {
+          return;
+        }
         e.preventDefault();
         router.push(
           `/external-link-handler?url=${encodeURIComponent(link.href)}`
