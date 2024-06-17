@@ -3,21 +3,6 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface SearchParams {
-  url: string;
-}
-
-const WHITELISTED_URLS = [
-  "https://trustedsite.com",
-  "https://anothertrustedsite.com",
-];
-
-const isWhitelisted = (url: string) => {
-  return WHITELISTED_URLS.some((whitelistedUrl) =>
-    url.startsWith(whitelistedUrl)
-  );
-};
-
 const ExternalLinkHandler = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,12 +22,6 @@ const ExternalLinkHandler = () => {
   const handleCancel = () => {
     router.push(previousPath);
   };
-
-  // If the URL is whitelisted, proceed directly
-  if (url && isWhitelisted(url)) {
-    handleProceed();
-    return null;
-  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
